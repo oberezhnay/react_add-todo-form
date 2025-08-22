@@ -11,11 +11,11 @@ function getUserById(userId: number) {
   return usersFromServer.find((user: User) => user.id === userId) || null;
 }
 
-function getNewTodoId(todos: Todo[]) {
-  const maxId = Math.max(...todos.map((todo: Todo) => todo.id));
+// function getNewTodoId(todos: Todo[]) {
+//   const maxId = Math.max(...todos.map((todo: Todo) => todo.id));
 
-  return maxId + 1;
-}
+//   return maxId + 1;
+// }
 
 const todosWithUser: Todo[] = todosFromServer.map(todo => ({
   ...todo,
@@ -48,15 +48,17 @@ export const App = () => {
       return;
     }
 
+    const maxExistId = todos.length > 0 ? Math.max(...todos.map((todo: Todo) => todo.id)) : 0;
+
     const newTodo: Todo = {
-      id: getNewTodoId(todos),
+      id: maxExistId + 1,
       title: title.replace(/[^a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9 ]/g, ''),
       completed: false,
       userId,
       user: getUserById(userId),
     };
 
-    setTodos(currentTodos => [newTodo, ...currentTodos]);
+    setTodos(currentTodos => [...currentTodos, newTodo]);
     resetForm();
   };
 
@@ -79,6 +81,7 @@ export const App = () => {
           <input
             type="text"
             data-cy="titleInput"
+            placeholder="Enter todo title"
             value={title}
             onChange={handleTitleChange}
           />
